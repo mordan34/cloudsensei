@@ -1,30 +1,37 @@
-# CloudSensei Infrastructure - ME-West-1 Region
+# CloudSensei Infrastructure - Management Account
 
-This directory contains Terragrunt and Terraform configurations for deploying infrastructure in the Middle East (UAE) - `me-west-1` region.
-
-## Architecture Overview
-
-The infrastructure consists of two main components:
-
-1. **Network Layer** (`network/`) - VPC, subnets, NAT gateways, route tables
-2. **EKS Cluster** (`eks/`) - Amazon Elastic Kubernetes Service cluster with managed node groups
+This directory contains the infrastructure code for the CloudSensei management account, organized with separate Terraform modules and Terragrunt configurations.
 
 ## Directory Structure
 
 ```
-me-west-1/
+accounts/management/
 ├── README.md
-├── network/
-│   ├── main.tf           # VPC and networking resources
-│   ├── variables.tf      # Input variables
-│   ├── outputs.tf        # Output values
-│   └── terragrunt.hcl    # Terragrunt configuration
-└── eks/
-    ├── main.tf           # EKS cluster and node group resources
-    ├── variables.tf      # Input variables
-    ├── outputs.tf        # Output values
-    └── terragrunt.hcl    # Terragrunt configuration
+├── terraform/                 # Terraform modules
+│   └── me-west-1/
+│       ├── network/           # VPC and networking resources
+│       │   ├── main.tf
+│       │   ├── variables.tf
+│       │   └── outputs.tf
+│       └── eks/               # EKS cluster resources
+│           ├── main.tf
+│           ├── variables.tf
+│           └── outputs.tf
+└── terragrunt/                # Terragrunt configurations
+    ├── terragrunt.hcl         # Root configuration
+    └── me-west-1/
+        ├── network/
+        │   └── terragrunt.hcl
+        └── eks/
+            └── terragrunt.hcl
 ```
+
+## Architecture Overview
+
+The infrastructure consists of two main components deployed in the Middle East (UAE) - `me-west-1` region:
+
+1. **Network Layer** - VPC, subnets, NAT gateways, route tables
+2. **EKS Cluster** - Amazon Elastic Kubernetes Service cluster with managed node groups
 
 ## Prerequisites
 
@@ -118,7 +125,7 @@ The EKS module creates:
 ### 1. Deploy Network Infrastructure
 
 ```bash
-cd accounts/management/terraform/me-west-1/network
+cd accounts/management/terragrunt/me-west-1/network
 terragrunt plan
 terragrunt apply
 ```
@@ -157,7 +164,7 @@ aws eks update-kubeconfig \
 
 ### Customization
 
-You can customize the deployment by modifying the `inputs` section in the respective `terragrunt.hcl` files.
+You can customize the deployment by modifying the `inputs` section in the respective `terragrunt.hcl` files in the `terragrunt/` directory.
 
 ## Security Considerations
 
@@ -194,7 +201,7 @@ To destroy the infrastructure:
 
 ```bash
 # Destroy EKS first (due to dependencies)
-cd accounts/management/terraform/me-west-1/eks
+cd accounts/management/terragrunt/me-west-1/eks
 terragrunt destroy
 
 # Then destroy network infrastructure
@@ -222,3 +229,4 @@ For issues specific to this infrastructure:
 ## Version History
 
 - v1.0.0: Initial infrastructure setup with VPC and EKS
+- v1.1.0: Separated Terraform modules from Terragrunt configurations

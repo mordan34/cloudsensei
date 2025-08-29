@@ -1,6 +1,6 @@
 # Terragrunt configuration for VPC/Network
 terraform {
-  source = "."
+  source = "../../../terraform/me-west-1/network"
 }
 
 # Include all settings from the root terragrunt.hcl file

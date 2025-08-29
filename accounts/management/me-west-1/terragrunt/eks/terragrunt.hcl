@@ -1,6 +1,6 @@
 # Terragrunt configuration for EKS Cluster
 terraform {
-  source = "."
+  source = "../../../terraform/me-west-1/eks"
 }
 
 # Include all settings from the root terragrunt.hcl file
@@ -70,7 +70,7 @@ inputs = {
   
   # Remote state configuration
   remote_state_bucket = "cloudsensei-terraform-state-${get_aws_account_id()}"
-  network_state_key   = "accounts/management/terraform/me-west-1/network"
+  network_state_key   = "accounts/management/terragrunt/me-west-1/network"
   
   # Cluster endpoint configuration
   endpoint_private_access = true
