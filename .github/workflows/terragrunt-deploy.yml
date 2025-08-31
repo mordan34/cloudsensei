@@ -1,18 +1,6 @@
 name: Terragrunt Infrastructure Deployment
 
 on:
-  push:
-    branches: [ main, develop ]
-    paths:
-      - 'accounts/management/terraform/**'
-      - 'accounts/management/terragrunt/**'
-      - '.github/workflows/terragrunt-deploy.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'accounts/management/terraform/**'
-      - 'accounts/management/terragrunt/**'
-      - '.github/workflows/terragrunt-deploy.yml'
   workflow_dispatch:
     inputs:
       environment:
