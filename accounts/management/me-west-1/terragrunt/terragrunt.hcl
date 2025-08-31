@@ -7,8 +7,8 @@ remote_state {
     encrypt        = true
     bucket         = "cloudsensei-terraform-state-${get_aws_account_id()}"
     key            = "${path_relative_to_include()}/terraform.tfstate"
-    region         = "me-west-1"
-    dynamodb_table = "cloudsensei-terraform-locks"
+    region         = "eu-central-1"
+    # dynamodb_table = "cloudsensei-terraform-locks"
   }
   generate = {
     path      = "backend.tf"
@@ -36,7 +36,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "me-west-1"
+  region = "eu-central-1"
   
   default_tags {
     tags = {
@@ -51,12 +51,12 @@ EOF
 
 # Global inputs that will be merged with the child terragrunt.hcl inputs
 inputs = {
-  aws_region = "me-west-1"
+  aws_region = "eu-central-1"
   
   common_tags = {
     Project     = "cloudsensei"
     Environment = "management"
-    Region      = "me-west-1"
+    Region      = "eu-central-1"
     ManagedBy   = "terragrunt"
   }
 }

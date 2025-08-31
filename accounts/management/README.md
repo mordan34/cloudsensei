@@ -8,7 +8,7 @@ This directory contains the infrastructure code for the CloudSensei management a
 accounts/management/
 ├── README.md
 ├── terraform/                 # Terraform modules
-│   └── me-west-1/
+│   └── eu-central-1/
 │       ├── network/           # VPC and networking resources
 │       │   ├── main.tf
 │       │   ├── variables.tf
@@ -19,7 +19,7 @@ accounts/management/
 │           └── outputs.tf
 └── terragrunt/                # Terragrunt configurations
     ├── terragrunt.hcl         # Root configuration
-    └── me-west-1/
+    └── eu-central-1/
         ├── network/
         │   └── terragrunt.hcl
         └── eks/
@@ -28,7 +28,7 @@ accounts/management/
 
 ## Architecture Overview
 
-The infrastructure consists of two main components deployed in the Middle East (UAE) - `me-west-1` region:
+The infrastructure consists of two main components deployed in the Middle East (UAE) - `eu-central-1` region:
 
 1. **Network Layer** - VPC, subnets, NAT gateways, route tables
 2. **EKS Cluster** - Amazon Elastic Kubernetes Service cluster with managed node groups
@@ -51,8 +51,8 @@ Create these resources before deployment:
 # S3 bucket for state storage (replace ACCOUNT_ID with your AWS account ID)
 aws s3api create-bucket \
   --bucket cloudsensei-terraform-state-ACCOUNT_ID \
-  --region me-west-1 \
-  --create-bucket-configuration LocationConstraint=me-west-1
+  --region eu-central-1 \
+  --create-bucket-configuration LocationConstraint=eu-central-1
 
 # Enable versioning on the bucket
 aws s3api put-bucket-versioning \
@@ -65,7 +65,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=LockID,AttributeType=S \
   --key-schema AttributeName=LockID,KeyType=HASH \
   --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-  --region me-west-1
+  --region eu-central-1
 ```
 
 ## Network Configuration
@@ -125,7 +125,7 @@ The EKS module creates:
 ### 1. Deploy Network Infrastructure
 
 ```bash
-cd accounts/management/terragrunt/me-west-1/network
+cd accounts/management/terragrunt/eu-central-1/network
 terragrunt plan
 terragrunt apply
 ```
@@ -144,7 +144,7 @@ After deployment, configure kubectl to connect to your cluster:
 
 ```bash
 aws eks update-kubeconfig \
-  --region me-west-1 \
+  --region eu-central-1 \
   --name cloudsensei-mgmt-eks \
   --profile your-aws-profile
 ```
@@ -201,7 +201,7 @@ To destroy the infrastructure:
 
 ```bash
 # Destroy EKS first (due to dependencies)
-cd accounts/management/terragrunt/me-west-1/eks
+cd accounts/management/terragrunt/eu-central-1/eks
 terragrunt destroy
 
 # Then destroy network infrastructure

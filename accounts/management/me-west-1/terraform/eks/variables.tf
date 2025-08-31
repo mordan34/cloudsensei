@@ -13,7 +13,7 @@ variable "kubernetes_version" {
 variable "aws_region" {
   description = "AWS region"
   type        = string
-  default     = "me-west-1"
+  default     = "eu-central-1"
 }
 
 variable "remote_state_bucket" {
@@ -24,7 +24,7 @@ variable "remote_state_bucket" {
 variable "network_state_key" {
   description = "State key for network module"
   type        = string
-  default     = "accounts/management/terraform/me-west-1/network"
+  default     = "accounts/management/terraform/eu-central-1/network"
 }
 
 # Cluster Configuration
@@ -121,7 +121,7 @@ variable "common_tags" {
   default = {
     Project     = "cloudsensei"
     Environment = "management"
-    Region      = "me-west-1"
+    Region      = "eu-central-1"
     ManagedBy   = "terraform"
   }
 }

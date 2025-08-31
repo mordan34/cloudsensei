@@ -101,26 +101,26 @@ check_infrastructure_structure() {
     echo -e "\n${BLUE}Checking infrastructure structure...${NC}"
     
     # Check terraform modules
-    if [[ -d "accounts/management/terraform/me-west-1/network" ]]; then
+    if [[ -d "accounts/management/terraform/eu-central-1/network" ]]; then
         print_status "Network Terraform module exists"
     else
         print_error "Network Terraform module missing"
     fi
     
-    if [[ -d "accounts/management/terraform/me-west-1/eks" ]]; then
+    if [[ -d "accounts/management/terraform/eu-central-1/eks" ]]; then
         print_status "EKS Terraform module exists"
     else
         print_error "EKS Terraform module missing"
     fi
     
     # Check terragrunt configurations
-    if [[ -d "accounts/management/terragrunt/me-west-1/network" ]]; then
+    if [[ -d "accounts/management/terragrunt/eu-central-1/network" ]]; then
         print_status "Network Terragrunt config exists"
     else
         print_error "Network Terragrunt config missing"
     fi
     
-    if [[ -d "accounts/management/terragrunt/me-west-1/eks" ]]; then
+    if [[ -d "accounts/management/terragrunt/eu-central-1/eks" ]]; then
         print_status "EKS Terragrunt config exists"
     else
         print_error "EKS Terragrunt config missing"
@@ -131,7 +131,7 @@ check_infrastructure_structure() {
 check_module_files() {
     echo -e "\n${BLUE}Checking module completeness...${NC}"
     
-    modules=("accounts/management/terraform/me-west-1/network" "accounts/management/terraform/me-west-1/eks")
+    modules=("accounts/management/terraform/eu-central-1/network" "accounts/management/terraform/eu-central-1/eks")
     required_files=("main.tf" "variables.tf" "outputs.tf")
     
     for module in "${modules[@]}"; do
@@ -148,7 +148,7 @@ check_module_files() {
     done
     
     # Check terragrunt configs
-    terragrunt_configs=("accounts/management/terragrunt/me-west-1/network" "accounts/management/terragrunt/me-west-1/eks")
+    terragrunt_configs=("accounts/management/terragrunt/eu-central-1/network" "accounts/management/terragrunt/eu-central-1/eks")
     
     for config in "${terragrunt_configs[@]}"; do
         config_name=$(basename "$config")

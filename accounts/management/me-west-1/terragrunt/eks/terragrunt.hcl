@@ -1,6 +1,6 @@
 # Terragrunt configuration for EKS Cluster
 terraform {
-  source = "../../../terraform/me-west-1/eks"
+  source = "../../../terraform/eu-central-1/eks"
 }
 
 # Include all settings from the root terragrunt.hcl file
@@ -13,7 +13,7 @@ dependency "network" {
   config_path = "../network"
   
   mock_outputs = {
-    vpc_id             = "vpc-fake-id"
+    vpc_id             = "vpc-id"
     vpc_cidr_block     = "10.0.0.0/16"
     private_subnet_ids = ["subnet-fake-private-1", "subnet-fake-private-2"]
     public_subnet_ids  = ["subnet-fake-public-1", "subnet-fake-public-2"]
@@ -27,13 +27,13 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "aws" {
-  region = "me-west-1"
+  region = "eu-central-1"
   
   default_tags {
     tags = {
       Project     = "cloudsensei"
       Environment = "management"
-      Region      = "me-west-1"
+      Region      = "eu-central-1"
       ManagedBy   = "terragrunt"
     }
   }
@@ -45,32 +45,15 @@ provider "tls" {
 EOF
 }
 
-# Configure remote state
-remote_state {
-  backend = "s3"
-  config = {
-    bucket  = "cloudsensei-terraform-state-${get_aws_account_id()}"
-    key     = "${path_relative_to_include()}/terraform.tfstate"
-    region  = "me-west-1"
-    encrypt = true
-    
-    dynamodb_table = "cloudsensei-terraform-locks"
-  }
-  generate = {
-    path      = "backend.tf"
-    if_exists = "overwrite"
-  }
-}
-
 # Input variables
 inputs = {
   cluster_name       = "cloudsensei-mgmt-eks"
   kubernetes_version = "1.28"
-  aws_region         = "me-west-1"
+  aws_region         = "eu-central-1"
   
   # Remote state configuration
   remote_state_bucket = "cloudsensei-terraform-state-${get_aws_account_id()}"
-  network_state_key   = "accounts/management/terragrunt/me-west-1/network"
+  network_state_key   = "accounts/management/terragrunt/eu-central-1/network"
   
   # Cluster endpoint configuration
   endpoint_private_access = true
@@ -97,7 +80,7 @@ inputs = {
   common_tags = {
     Project     = "cloudsensei"
     Environment = "management"
-    Region      = "me-west-1"
+    Region      = "eu-central-1"
     ManagedBy   = "terragrunt"
     Component   = "eks"
   }

@@ -37,7 +37,7 @@ on:
 env:
   TG_VERSION: '0.55.1'
   TF_VERSION: '1.6.6'
-  AWS_REGION: 'me-west-1'
+  AWS_REGION: 'eu-central-1'
 
 jobs:
   detect-changes:
@@ -58,11 +58,11 @@ jobs:
         with:
           filters: |
             network:
-              - 'accounts/management/terraform/me-west-1/network/**'
-              - 'accounts/management/terragrunt/me-west-1/network/**'
+              - 'accounts/management/terraform/eu-central-1/network/**'
+              - 'accounts/management/terragrunt/eu-central-1/network/**'
             eks:
-              - 'accounts/management/terraform/me-west-1/eks/**'
-              - 'accounts/management/terragrunt/me-west-1/eks/**'
+              - 'accounts/management/terraform/eu-central-1/eks/**'
+              - 'accounts/management/terragrunt/eu-central-1/eks/**'
 
       - name: Set deployment matrix
         id: matrix
@@ -115,12 +115,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terragrunt Validate
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           terragrunt validate
 
       - name: Terragrunt Plan
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           terragrunt plan -out=tfplan
 
@@ -128,7 +128,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-${{ matrix.module }}
-          path: accounts/management/terragrunt/me-west-1/${{ matrix.module }}/tfplan
+          path: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}/tfplan
           retention-days: 7
 
   deploy-network:
@@ -166,10 +166,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfplan-network
-          path: accounts/management/terragrunt/me-west-1/network/
+          path: accounts/management/terragrunt/eu-central-1/network/
 
       - name: Terragrunt Apply - Network
-        working-directory: accounts/management/terragrunt/me-west-1/network
+        working-directory: accounts/management/terragrunt/eu-central-1/network
         run: |
           if [[ "${{ github.event.inputs.action }}" == "destroy" ]]; then
             terragrunt destroy -auto-approve
@@ -213,10 +213,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfplan-eks
-          path: accounts/management/terragrunt/me-west-1/eks/
+          path: accounts/management/terragrunt/eu-central-1/eks/
 
       - name: Terragrunt Apply - EKS
-        working-directory: accounts/management/terragrunt/me-west-1/eks
+        working-directory: accounts/management/terragrunt/eu-central-1/eks
         run: |
           if [[ "${{ github.event.inputs.action }}" == "destroy" ]]; then
             terragrunt destroy -auto-approve

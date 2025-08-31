@@ -12,7 +12,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Default values
-AWS_REGION="me-west-1"
+AWS_REGION="eu-central-1"
 PROJECT_NAME="cloudsensei"
 
 echo -e "${BLUE}🚀 CloudSensei Infrastructure - GitHub Repository Setup${NC}"

@@ -52,7 +52,7 @@ variable "common_tags" {
   default = {
     Project     = "cloudsensei"
     Environment = "management"
-    Region      = "me-west-1"
+    Region      = "eu-central-1"
     ManagedBy   = "terraform"
   }
 }

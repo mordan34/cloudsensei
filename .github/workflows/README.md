@@ -113,8 +113,8 @@ Ensure the following AWS resources exist before running the workflow:
 # S3 bucket for Terraform state (replace ACCOUNT_ID with your AWS account ID)
 aws s3api create-bucket \
   --bucket cloudsensei-terraform-state-ACCOUNT_ID \
-  --region me-west-1 \
-  --create-bucket-configuration LocationConstraint=me-west-1
+  --region eu-central-1 \
+  --create-bucket-configuration LocationConstraint=eu-central-1
 
 # DynamoDB table for state locking
 aws dynamodb create-table \
@@ -122,7 +122,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=LockID,AttributeType=S \
   --key-schema AttributeName=LockID,KeyType=HASH \
   --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-  --region me-west-1
+  --region eu-central-1
 ```
 
 ## Usage Examples
@@ -130,7 +130,7 @@ aws dynamodb create-table \
 ### Automatic Deployment
 ```bash
 # 1. Make changes to Terraform/Terragrunt files
-git add accounts/management/terraform/me-west-1/network/main.tf
+git add accounts/management/terraform/eu-central-1/network/main.tf
 git commit -m "feat: update VPC CIDR block"
 git push origin main
 
@@ -152,7 +152,7 @@ git push origin main
 git checkout -b feature/update-eks-version
 
 # 2. Make changes
-git add accounts/management/terraform/me-west-1/eks/variables.tf
+git add accounts/management/terraform/eu-central-1/eks/variables.tf
 git commit -m "feat: update EKS to version 1.29"
 
 # 3. Push and create PR
@@ -213,8 +213,8 @@ env:
 ## Extending the Workflow
 
 ### Adding New Modules
-1. Create Terraform module in `accounts/management/terraform/me-west-1/`
-2. Create Terragrunt configuration in `accounts/management/terragrunt/me-west-1/`
+1. Create Terraform module in `accounts/management/terraform/eu-central-1/`
+2. Create Terragrunt configuration in `accounts/management/terragrunt/eu-central-1/`
 3. Update workflow path filters in `detect-changes` job
 4. Add new deployment job following existing pattern
 

@@ -1,6 +1,6 @@
 # Terragrunt configuration for VPC/Network
 terraform {
-  source = "../../../terraform/me-west-1/network"
+  source = "../../../terraform/eu-central-1/network"
 }
 
 # Include all settings from the root terragrunt.hcl file
@@ -14,35 +14,18 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "aws" {
-  region = "me-west-1"
+  region = "eu-central-1"
   
   default_tags {
     tags = {
       Project     = "cloudsensei"
       Environment = "management"
-      Region      = "me-west-1"
+      Region      = "eu-central-1"
       ManagedBy   = "terragrunt"
     }
   }
 }
 EOF
-}
-
-# Configure remote state
-remote_state {
-  backend = "s3"
-  config = {
-    bucket  = "cloudsensei-terraform-state-${get_aws_account_id()}"
-    key     = "${path_relative_to_include()}/terraform.tfstate"
-    region  = "me-west-1"
-    encrypt = true
-    
-    dynamodb_table = "cloudsensei-terraform-locks"
-  }
-  generate = {
-    path      = "backend.tf"
-    if_exists = "overwrite"
-  }
 }
 
 # Input variables
@@ -63,7 +46,7 @@ inputs = {
   common_tags = {
     Project     = "cloudsensei"
     Environment = "management"
-    Region      = "me-west-1"
+    Region      = "eu-central-1
     ManagedBy   = "terragrunt"
     Component   = "network"
   }

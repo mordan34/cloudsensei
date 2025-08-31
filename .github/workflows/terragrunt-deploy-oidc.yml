@@ -48,7 +48,7 @@ permissions:
 env:
   TG_VERSION: '0.55.1'
   TF_VERSION: '1.6.6'
-  AWS_REGION: 'me-west-1'
+  AWS_REGION: 'eu-central-1'
 
 jobs:
   security-scan:
@@ -94,11 +94,11 @@ jobs:
         with:
           filters: |
             network:
-              - 'accounts/management/terraform/me-west-1/network/**'
-              - 'accounts/management/terragrunt/me-west-1/network/**'
+              - 'accounts/management/terraform/eu-central-1/network/**'
+              - 'accounts/management/terragrunt/eu-central-1/network/**'
             eks:
-              - 'accounts/management/terraform/me-west-1/eks/**'
-              - 'accounts/management/terragrunt/me-west-1/eks/**'
+              - 'accounts/management/terraform/eu-central-1/eks/**'
+              - 'accounts/management/terragrunt/eu-central-1/eks/**'
 
       - name: Set deployment matrix
         id: matrix
@@ -194,29 +194,29 @@ jobs:
             ${{ runner.os }}-terragrunt-
 
       - name: Terragrunt Init
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           terragrunt init -reconfigure
 
       - name: Terragrunt Validate
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           terragrunt validate
 
       - name: Terragrunt Format Check
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           terragrunt fmt -check -recursive
 
       - name: Terragrunt Plan
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           terragrunt plan -out=tfplan -detailed-exitcode
         continue-on-error: true
         id: plan
 
       - name: Plan Summary
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           echo "## Terraform Plan Summary for ${{ matrix.module }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
@@ -228,8 +228,8 @@ jobs:
         with:
           name: tfplan-${{ matrix.module }}-${{ github.run_id }}
           path: |
-            accounts/management/terragrunt/me-west-1/${{ matrix.module }}/tfplan
-            accounts/management/terragrunt/me-west-1/${{ matrix.module }}/.terraform/
+            accounts/management/terragrunt/eu-central-1/${{ matrix.module }}/tfplan
+            accounts/management/terragrunt/eu-central-1/${{ matrix.module }}/.terraform/
           retention-days: 7
 
       - name: Comment PR with Plan
@@ -241,7 +241,7 @@ jobs:
             const { execSync } = require('child_process');
             
             try {
-              const plan = execSync('cd accounts/management/terragrunt/me-west-1/${{ matrix.module }} && terragrunt show -no-color tfplan', {encoding: 'utf8'});
+              const plan = execSync('cd accounts/management/terragrunt/eu-central-1/${{ matrix.module }} && terragrunt show -no-color tfplan', {encoding: 'utf8'});
               
               const comment = `## Terraform Plan for \`${{ matrix.module }}\` module
               
@@ -276,8 +276,8 @@ jobs:
     environment: 
       name: ${{ github.event.inputs.environment || 'management' }}
       url: |
-        ${{ matrix.module == 'network' && 'https://console.aws.amazon.com/vpc/home?region=me-west-1' || 
-            matrix.module == 'eks' && 'https://console.aws.amazon.com/eks/home?region=me-west-1' || 
+        ${{ matrix.module == 'network' && 'https://console.aws.amazon.com/vpc/home?region=eu-central-1' || 
+            matrix.module == 'eks' && 'https://console.aws.amazon.com/eks/home?region=eu-central-1' || 
             'https://console.aws.amazon.com/' }}
     steps:
       - name: Checkout
@@ -305,7 +305,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfplan-${{ matrix.module }}-${{ github.run_id }}
-          path: accounts/management/terragrunt/me-west-1/${{ matrix.module }}/
+          path: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}/
 
       - name: Wait for Dependencies
         if: matrix.depends_on[0] != null
@@ -314,7 +314,7 @@ jobs:
           # Dependencies are handled by job ordering and max-parallel: 1
 
       - name: Terragrunt Apply
-        working-directory: accounts/management/terragrunt/me-west-1/${{ matrix.module }}
+        working-directory: accounts/management/terragrunt/eu-central-1/${{ matrix.module }}
         run: |
           if [[ "${{ github.event.inputs.action }}" == "destroy" ]]; then
             echo "⚠️ Destroying infrastructure for ${{ matrix.module }}"
