@@ -21,30 +21,6 @@ dependency "network" {
   mock_outputs_allowed_terraform_commands = ["validate", "plan"]
 }
 
-# Generate provider configuration
-generate "provider" {
-  path      = "provider.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-provider "aws" {
-  region = "eu-central-1"
-  
-  default_tags {
-    tags = {
-      Project     = "cloudsensei"
-      Environment = "management"
-      Region      = "eu-central-1"
-      ManagedBy   = "terragrunt"
-    }
-  }
-}
-
-provider "tls" {
-  # Configuration options
-}
-EOF
-}
-
 # Input variables
 inputs = {
   cluster_name       = "cloudsensei-mgmt-eks"

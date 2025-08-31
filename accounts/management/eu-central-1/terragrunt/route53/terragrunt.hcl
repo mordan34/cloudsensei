@@ -8,26 +8,6 @@ include "root" {
   path = find_in_parent_folders()
 }
 
-# Generate provider configuration
-generate "provider" {
-  path      = "provider.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-provider "aws" {
-  region = "eu-central-1"
-  
-  default_tags {
-    tags = {
-      Project     = "cloudsensei"
-      Environment = "management"
-      Region      = "eu-central-1"
-      ManagedBy   = "terragrunt"
-    }
-  }
-}
-EOF
-}
-
 # Input variables
 inputs = {
   name_prefix = "cloudsensei-mgmt"
