@@ -13,16 +13,6 @@ resource "aws_kms_alias" "eks" {
   target_key_id                           = aws_kms_key.eks.key_id
 }
 
-# CloudWatch log group for EKS cluster logs
-resource "aws_cloudwatch_log_group" "cluster" {
-  name                                    = "/aws/eks/${var.cluster_name}/cluster"
-  retention_in_days                       = var.cluster_log_retention_days
-
-  tags = merge(var.common_tags, {
-    Name                                  = "${var.cluster_name}-logs"
-  })
-}
-
 module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
   version                                = "~> 21.0"

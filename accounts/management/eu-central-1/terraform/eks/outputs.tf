@@ -78,16 +78,6 @@ output "cluster_oidc_issuer_url" {
   value       = module.eks.cluster_oidc_issuer_url
 }
 
-output "cloudwatch_log_group_name" {
-  description = "Name of cloudwatch log group created"
-  value       = aws_cloudwatch_log_group.cluster.name
-}
-
-output "cloudwatch_log_group_arn" {
-  description = "Arn of cloudwatch log group created"
-  value       = aws_cloudwatch_log_group.cluster.arn
-}
-
 output "kms_key_arn" {
   description = "The Amazon Resource Name (ARN) of the key"
   value       = aws_kms_key.eks.arn

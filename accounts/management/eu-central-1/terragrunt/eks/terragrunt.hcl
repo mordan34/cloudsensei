@@ -22,7 +22,7 @@ dependency "network" {
 # Input variables
 inputs = {
   cluster_name                = "cloudsensei-mgmt-eks"
-  kubernetes_version          = "1.33"
+  kubernetes_version          = "1.32"
   aws_region                  = "eu-central-1"
   
   # Remote state configuration
