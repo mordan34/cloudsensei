@@ -26,13 +26,13 @@ resource "aws_route53_health_check" "main" {
   count = var.enable_health_check ? 1 : 0
 
   fqdn                            = var.domain_name
-  port                           = var.health_check_port
-  type                           = var.health_check_type
-  resource_path                  = var.health_check_path
-  failure_threshold              = var.health_check_failure_threshold
-  request_interval               = var.health_check_request_interval
-  cloudwatch_alarm_region        = var.aws_region
-  cloudwatch_alarm_name          = "${var.name_prefix}-${replace(var.domain_name, ".", "-")}-health-check"
+  port                            = var.health_check_port
+  type                            = var.health_check_type
+  resource_path                   = var.health_check_path
+  failure_threshold               = var.health_check_failure_threshold
+  request_interval                = var.health_check_request_interval
+  cloudwatch_alarm_region         = var.aws_region
+  cloudwatch_alarm_name           = "${var.name_prefix}-${replace(var.domain_name, ".", "-")}-health-check"
   insufficient_data_health_status = "Healthy"
 
   tags = merge(var.common_tags, {

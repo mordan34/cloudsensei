@@ -1,5 +1,5 @@
 # Data source for availability zones
-data "aws_availability_zones" "available" { 
+data "aws_availability_zones" "available" {
   state = "available"
 }
 
@@ -33,8 +33,8 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = merge(var.common_tags, {
-    Name = "${var.name_prefix}-public-subnet-${count.index + 1}"
-    Type = "Public"
+    Name                     = "${var.name_prefix}-public-subnet-${count.index + 1}"
+    Type                     = "Public"
     "kubernetes.io/role/elb" = "1"
   })
 }
@@ -48,8 +48,8 @@ resource "aws_subnet" "private" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = merge(var.common_tags, {
-    Name = "${var.name_prefix}-private-subnet-${count.index + 1}"
-    Type = "Private"
+    Name                              = "${var.name_prefix}-private-subnet-${count.index + 1}"
+    Type                              = "Private"
     "kubernetes.io/role/internal-elb" = "1"
   })
 }
