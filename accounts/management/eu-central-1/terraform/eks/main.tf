@@ -20,11 +20,12 @@ module "eks" {
   name               = var.cluster_name
   kubernetes_version = var.kubernetes_version
 
-  vpc_id                       = var.vpc_id
-  subnet_ids                   = var.subnet_ids
-  endpoint_public_access       = var.endpoint_public_access
-  endpoint_private_access      = var.endpoint_private_access
-  endpoint_public_access_cidrs = var.public_access_cidrs
+  vpc_id                                   = var.vpc_id
+  subnet_ids                               = var.subnet_ids
+  endpoint_public_access                   = var.endpoint_public_access
+  endpoint_private_access                  = var.endpoint_private_access
+  endpoint_public_access_cidrs             = var.public_access_cidrs
+  enable_cluster_creator_admin_permissions = true
 
   # Enable cluster logging
   enabled_log_types                      = var.cluster_log_types
