@@ -33,7 +33,7 @@ resource "aws_route53_health_check" "main" {
   request_interval               = var.health_check_request_interval
   cloudwatch_alarm_region        = var.aws_region
   cloudwatch_alarm_name          = "${var.name_prefix}-${replace(var.domain_name, ".", "-")}-health-check"
-  insufficient_data_health_status = "Failure"
+  insufficient_data_health_status = "Healthy"
 
   tags = merge(var.common_tags, {
     Name = "${var.name_prefix}-${replace(var.domain_name, ".", "-")}-health-check"

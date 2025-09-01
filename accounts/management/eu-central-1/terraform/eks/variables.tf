@@ -7,7 +7,7 @@ variable "cluster_name" {
 variable "kubernetes_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.28"
+  default     = "1.30"
 }
 
 variable "aws_region" {
@@ -124,4 +124,14 @@ variable "common_tags" {
     Region      = "eu-central-1"
     ManagedBy   = "terraform"
   }
+}
+
+variable "vpc_id" {
+  description = "VPC ID where the cluster will be created"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs where the cluster will be created"
+  type        = list(string)
 }

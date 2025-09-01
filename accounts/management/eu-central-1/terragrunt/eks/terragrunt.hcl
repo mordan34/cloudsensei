@@ -1,18 +1,22 @@
 # Terragrunt configuration for EKS Cluster
 terraform {
-  source = "../../terraform/eks"
+  source                      = "../../terraform/eks"
 }
 
 # Include all settings from the root terragrunt.hcl file
 include "root" {
-  path = find_in_parent_folders()
+  path                        = find_in_parent_folders()
 }
 
 # Dependencies - EKS depends on VPC/network
 dependency "network" {
-  config_path = "../network"
+  config_path                 = "../network"
 
-  mock_outputs_allowed_terraform_commands = ["validate", "plan"]
+  mock_outputs_allowed_terraform_commands = ["validate", "plan", "init"]
+  mock_outputs                = {
+    vpc_id                    = "vpc-mock123456"
+    private_subnet_ids        = ["subnet-mock123", "subnet-mock456"]
+  }
 }
 
 # Input variables
@@ -39,23 +43,23 @@ inputs = {
   cluster_log_retention_days  = 30
   
   # Node group configuration
-  instance_types = ["t3.medium"]
-  ami_type      = "AL2_x86_64"
-  capacity_type = "ON_DEMAND"
-  disk_size     = 50
+  instance_types              = ["t3.medium"]
+  ami_type                    = "AL2_x86_64"
+  capacity_type               = "ON_DEMAND"
+  disk_size                   = 50
   
   # Scaling configuration
-  desired_size     = 2
-  max_size        = 2
-  min_size        = 1
-  max_unavailable = 1
+  desired_size                = 2
+  max_size                    = 2
+  min_size                    = 1
+  max_unavailable             = 1
   
   # Tags
-  common_tags = {
-    Project     = "cloudsensei"
-    Environment = "management"
-    Region      = "eu-central-1"
-    ManagedBy   = "terragrunt"
-    Component   = "eks"
+  common_tags                 = {
+    Project                   = "cloudsensei"
+    Environment               = "management"
+    Region                    = "eu-central-1"
+    ManagedBy                 = "terragrunt"
+    Component                 = "eks"
   }
 }
