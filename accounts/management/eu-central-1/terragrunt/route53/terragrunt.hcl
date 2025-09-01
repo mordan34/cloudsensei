@@ -12,7 +12,7 @@ include "root" {
 inputs = {
   name_prefix = "cloudsensei-mgmt"
   
-  domain_name = "cloudsensei.com"
+  domain_name = "cloud-sensei.com"
   hosted_zone_comment = "Public hosted zone for CloudSensei domain - Management Account"
   
   # Set to true only if you want to destroy the zone even with records
