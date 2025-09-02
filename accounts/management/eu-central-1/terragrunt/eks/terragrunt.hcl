@@ -8,7 +8,7 @@ include "root" {
   path                        = find_in_parent_folders()
 }
 
-# Dependencies - EKS depends on VPC/network
+# Dependencies - EKS depends on VPC/network and Route53
 dependency "network" {
   config_path                 = "../network"
 
@@ -16,6 +16,16 @@ dependency "network" {
   mock_outputs                = {
     vpc_id                    = "vpc-mock123456"
     private_subnet_ids        = ["subnet-mock123", "subnet-mock456"]
+  }
+}
+
+dependency "route53" {
+  config_path                 = "../route53"
+
+  mock_outputs_allowed_terraform_commands = ["validate", "plan", "init"]
+  mock_outputs                = {
+    domain_name               = "cloud-sensei.com"
+    hosted_zone_id           = "Z123456789"
   }
 }
 
@@ -37,6 +47,9 @@ inputs = {
   # network
   vpc_id                      = dependency.network.outputs.vpc_id
   subnet_ids                  = dependency.network.outputs.private_subnet_ids
+
+  # route53
+  domain_name                 = dependency.route53.outputs.domain_name
 
   # Logging configuration
   cluster_log_types           = ["api", "audit", "authenticator", "controllerManager", "scheduler"]

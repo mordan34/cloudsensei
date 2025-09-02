@@ -62,3 +62,43 @@ module "eks" {
 
   tags = var.common_tags
 }
+
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "~> 1.0" #ensure to update this to the latest/desired version
+
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      most_recent = true
+    }
+    coredns = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+  }
+
+  enable_argocd        = true
+  enable_karpenter     = true
+  enable_external_dns  = true
+  enable_cert_manager  = true
+  enable_ingress_nginx = true
+  # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
+
+  argocd = {
+    values = [templatefile("${path.module}/../../argocd/values.yaml.tpl", {
+      domain_name = var.domain_name
+    })]
+  }
+
+  tags = var.common_tags
+}

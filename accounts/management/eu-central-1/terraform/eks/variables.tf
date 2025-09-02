@@ -55,7 +55,7 @@ variable "cluster_log_types" {
 variable "cluster_log_retention_days" {
   description = "Retention period for cluster logs"
   type        = number
-  default     = 30
+  default     = 3
 }
 
 # Node Group Configuration
@@ -134,4 +134,10 @@ variable "vpc_id" {
 variable "subnet_ids" {
   description = "List of subnet IDs where the cluster will be created"
   type        = list(string)
+}
+
+variable "domain_name" {
+  description = "Domain name from Route53 hosted zone"
+  type        = string
+  default     = ""
 }
