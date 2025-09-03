@@ -95,7 +95,7 @@ module "eks_blueprints_addons" {
   # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
   argocd = {
-    values = [templatefile("${path.module}/../../argocd/values.yaml.tpl", {
+    values = [templatefile("${path.module}/values.yaml.tpl", {
       domain_name = var.domain_name
     })]
   }
