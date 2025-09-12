@@ -1,0 +1,50 @@
+apiVersion: cloudsensei.io/v1alpha1
+kind: CloudSenseiCollector
+metadata:
+  name: my-collector
+spec:
+  tenantId: "cust-123"
+
+  # Ingest endpoint (your SaaS)
+  endpoint:
+    url: "ingest.cloudsensei.com:443"
+    auth:
+      apiKeySecretRef:
+        name: cloudsensei-api-key
+        key: api-key
+
+  # Data sources
+  sources:
+    - type: metrics
+      provider: prometheus
+      scrapeInterval: 30s
+      endpoints:
+        - "http://prometheus-operated:9090"
+      metrics:
+        include:
+          - "cpu_usage_seconds_total"
+          - "http_requests_total"
+        exclude:
+          - "go_gc_*"
+
+    - type: logs
+      provider: file
+      paths:
+        - "/var/log/app/*.log"
+      parseFormat: json
+      multilinePattern: "^\d{4}-\d{2}-\d{2}"
+
+  # Batching & compression
+  batching:
+    maxBatchSize: 1000      # number of events per batch
+    flushInterval: 15s      # send if interval passes
+    compression: gzip       # gzip or zstd
+
+  # Resource limits for agent
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"

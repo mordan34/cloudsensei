@@ -13,3 +13,7 @@ override.tf.json
 
 # Terragrunt cache
 .terragrunt-cache/
+
+
+# Sensitive Secret files
+secrets/**
