@@ -30,7 +30,7 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD_FILE=/run/secrets/n8n_auth_password
-      - N8N_HOST=https://ca3f71253348.ngrok-free.app
+      - N8N_HOST=ca3f71253348.ngrok-free.app
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - GENERIC_TIMEZONE=Europe/Berlin
