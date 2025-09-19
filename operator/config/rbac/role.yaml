@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - cloudsensei.cloud-sensei.com
+  resources:
+  - cloudsenseicollectors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cloudsensei.cloud-sensei.com
+  resources:
+  - cloudsenseicollectors/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - cloudsensei.cloud-sensei.com
+  resources:
+  - cloudsenseicollectors/status
+  verbs:
+  - get
+  - patch
+  - update

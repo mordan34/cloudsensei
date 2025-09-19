@@ -1,0 +1,363 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.18.0
+  name: cloudsenseicollectors.cloudsensei.cloud-sensei.com
+spec:
+  group: cloudsensei.cloud-sensei.com
+  names:
+    kind: CloudSenseiCollector
+    listKind: CloudSenseiCollectorList
+    plural: cloudsenseicollectors
+    singular: cloudsenseicollector
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: CloudSenseiCollector is the Schema for the cloudsenseicollectors
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: spec defines the desired state of CloudSenseiCollector
+            properties:
+              batching:
+                description: batching controls generic upstream batching (optional
+                  – may be ignored by some source types)
+                properties:
+                  compression:
+                    description: compression algorithm (gzip|zstd;none)
+                    enum:
+                    - gzip
+                    - zstd
+                    - none
+                    type: string
+                  flushInterval:
+                    description: flushInterval duration (e.g. 15s)
+                    pattern: ^[0-9]+(s|m|h)$
+                    type: string
+                  maxBatchSize:
+                    description: maxBatchSize number of events per batch
+                    minimum: 1
+                    type: integer
+                required:
+                - compression
+                - flushInterval
+                - maxBatchSize
+                type: object
+              database:
+                description: database defines metadata persistence (Postgres).
+                properties:
+                  postgres:
+                    description: postgres configuration
+                    properties:
+                      database:
+                        type: string
+                      dsnSecretRef:
+                        description: dsnSecretRef references a Secret containing a
+                          "dsn" key (postgres connection string)
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      host:
+                        description: If DSNSecretRef not supplied, the following discrete
+                          fields can be used (all required in that case).
+                        type: string
+                      passwordSecretRef:
+                        description: SimpleSecretKeyRef references a single key in
+                          a Secret.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      port:
+                        type: integer
+                      userSecretRef:
+                        description: SimpleSecretKeyRef references a single key in
+                          a Secret.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                    type: object
+                required:
+                - postgres
+                type: object
+              sources:
+                description: |-
+                  sources describes the set of data sources the collector agent should enable.
+                  Each entry's Type drives interpretation of the remaining fields.
+                items:
+                  description: |-
+                    SourceSpec is a discriminated union; fields are conditionally required
+                    depending on Type.
+                  properties:
+                    endpoints:
+                      description: endpoints list Prometheus-compatible endpoints.
+                      items:
+                        type: string
+                      type: array
+                    loki:
+                      description: LokiEndpoint describes where the Loki API resides.
+                      properties:
+                        url:
+                          description: url of the Loki HTTP endpoint (e.g. http://loki:3100)
+                          pattern: ^https?://
+                          type: string
+                      required:
+                      - url
+                      type: object
+                    metrics:
+                      description: metrics filter configuration
+                      properties:
+                        exclude:
+                          items:
+                            type: string
+                          type: array
+                        include:
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    multilinePattern:
+                      description: multilinePattern regex for line starts
+                      type: string
+                    parseFormat:
+                      description: parseFormat (e.g. json, text)
+                      type: string
+                    paths:
+                      items:
+                        type: string
+                      type: array
+                    provider:
+                      description: provider is the underlying implementation (e.g.
+                        prometheus, file, loki)
+                      minLength: 1
+                      type: string
+                    queries:
+                      description: queries to execute when Type=lokiQuery
+                      items:
+                        description: LokiQuery describes a single periodic range query.
+                        properties:
+                          expr:
+                            description: expr is a LogQL expression
+                            minLength: 1
+                            type: string
+                          interval:
+                            description: interval (schedule) between query executions
+                              (collector internal)
+                            pattern: ^[0-9]+(s|m|h)$
+                            type: string
+                          limit:
+                            description: limit maximum entries; 0 means default
+                            minimum: 0
+                            type: integer
+                          rangeMinutes:
+                            description: rangeMinutes lookback window size
+                            minimum: 1
+                            type: integer
+                          step:
+                            description: step duration (e.g. 15s)
+                            pattern: ^[0-9]+(s|m|h)$
+                            type: string
+                        required:
+                        - expr
+                        - interval
+                        - limit
+                        - rangeMinutes
+                        - step
+                        type: object
+                      type: array
+                    scrapeInterval:
+                      type: string
+                    type:
+                      description: type selects which collector logic to enable.
+                      enum:
+                      - metrics
+                      - logs
+                      - lokiQuery
+                      type: string
+                  required:
+                  - provider
+                  - type
+                  type: object
+                minItems: 1
+                type: array
+              storage:
+                description: |-
+                  storage defines where raw payloads (e.g. Loki JSON) are persisted (S3).
+                  Optional now, but required for lokiQuery sources to function.
+                properties:
+                  s3:
+                    description: s3 configuration
+                    properties:
+                      bucket:
+                        description: bucket name
+                        minLength: 3
+                        type: string
+                      compression:
+                        description: compression for stored payloads (gzip|none)
+                        enum:
+                        - gzip
+                        - none
+                        type: string
+                      credentialsSecretRef:
+                        description: credentialsSecretRef references a Secret with
+                          access credentials
+                        properties:
+                          accessKeyIdKey:
+                            description: accessKeyIdKey key containing AWS access
+                              key id
+                            type: string
+                          name:
+                            description: name of the Secret
+                            type: string
+                          secretAccessKeyKey:
+                            description: secretAccessKeyKey key containing AWS secret
+                              access key
+                            type: string
+                          sessionTokenKey:
+                            description: sessionTokenKey optional key for session
+                              token
+                            type: string
+                        required:
+                        - accessKeyIdKey
+                        - name
+                        - secretAccessKeyKey
+                        type: object
+                      prefix:
+                        description: prefix optional path prefix inside the bucket
+                        type: string
+                      region:
+                        description: region (e.g. eu-central-1)
+                        minLength: 3
+                        type: string
+                    required:
+                    - bucket
+                    - region
+                    type: object
+                required:
+                - s3
+                type: object
+            required:
+            - sources
+            type: object
+          status:
+            description: status defines the observed state of CloudSenseiCollector
+            properties:
+              conditions:
+                description: conditions capture granular status.
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                description: observedGeneration reflects the generation most recently
+                  acted on
+                format: int64
+                type: integer
+              phase:
+                description: phase is a high-level summary of current state
+                enum:
+                - Pending
+                - Reconciling
+                - Ready
+                - Error
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
