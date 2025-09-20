@@ -1,35 +1,30 @@
-apiVersion: cloudsensei.io/v1alpha1
+apiVersion: cloudsensei.cloud-sensei.com/v1alpha1
 kind: CloudSenseiCollector
 metadata:
   name: my-collector
 spec:
-  # tenantId removed (single-environment scope)
-
-  # Data sources (extensible). New type: lokiQuery
   sources:
     - type: metrics
       provider: prometheus
       scrapeInterval: 30s
       endpoints:
-        - "http://prometheus-operated:9090"
+        - http://prometheus-operated:9090
       metrics:
         include:
-          - "cpu_usage_seconds_total"
-          - "http_requests_total"
+          - cpu_usage_seconds_total
+          - http_requests_total
         exclude:
-          - "go_gc_*"
-
+          - go_gc_*
     - type: logs
       provider: file
       paths:
-        - "/var/log/app/*.log"
+        - /var/log/app/*.log
       parseFormat: json
       multilinePattern: '^\d{4}-\d{2}-\d{2}'
-
     - type: lokiQuery
       provider: loki
       loki:
-        url: "http://loki:3100"
+        url: http://loki:3100
       queries:
         - expr: '{app="myapp"} |= "ERROR"'
           step: 15s
@@ -42,17 +37,23 @@ spec:
           limit: 8000
           interval: 120s
 
-  # Batching & compression for upstream ingestion (optional; retained for future use)
-  batching:
-    maxBatchSize: 1000
-    flushInterval: 15s
-    compression: gzip
-
-  # Resource limits for agent
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "128Mi"
-    limits:
-      cpu: "500m"
-      memory: "512Mi"
+  # Optional sections (uncomment and configure if needed)
+  # storage:
+  #   s3:
+  #     bucket: cloudsensei-observability
+  #     region: eu-central-1
+  #     prefix: raw
+  #     compression: gzip
+  #     credentialsSecretRef:
+  #       name: cloudsensei-s3-creds
+  #       accessKeyIdKey: access_key_id
+  #       secretAccessKeyKey: secret_access_key
+  # database:
+  #   postgres:
+  #     dsnSecretRef:
+  #       name: cloudsensei-pg
+  #       key: dsn
+  # batching:
+  #   maxBatchSize: 1000
+  #   flushInterval: 15s
+  #   compression: gzip

@@ -1,0 +1,32 @@
+{{- /*
+  Helm NOTES for kube-prometheus-stack-wrapper
+*/ -}}
+RELEASE: {{ .Release.Name }}
+NAMESPACE: {{ .Release.Namespace }}
+
+The kube-prometheus-stack components have been installed.
+
+Ingress endpoints (no TLS, dev mode):
+Grafana: http://{{ (index .Values "kube-prometheus-stack" "grafana" "ingress" "hosts" 0) | default "grafana.127.0.0.1.nip.io" }}
+Prometheus: http://{{ (index .Values "kube-prometheus-stack" "prometheus" "ingress" "hosts" 0) | default "prometheus.127.0.0.1.nip.io" }}
+Alertmanager: http://{{ (index .Values "kube-prometheus-stack" "alertmanager" "ingress" "hosts" 0) | default "alertmanager.127.0.0.1.nip.io" }}
+
+To install (or upgrade) this chart locally:
+  helm dependency update charts/kube-prometheus-stack
+  helm install observability charts/kube-prometheus-stack -n monitoring --create-namespace
+
+To upgrade after changes:
+  helm upgrade observability charts/kube-prometheus-stack -n monitoring
+
+If you do not have an ingress controller, install one (example: ingress-nginx):
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
+
+Then wait until controller Ready and add host entries if nip.io unavailable (usually not needed).
+
+Grafana admin user: admin
+Grafana admin password: (from value grafana.adminPassword) currently 'admin' (dev only)
+
+Uninstall:
+  helm uninstall observability -n monitoring
+
+Done.

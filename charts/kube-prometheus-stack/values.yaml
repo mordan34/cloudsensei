@@ -1,0 +1,78 @@
+kube-prometheus-stack:
+  enabled: true
+
+  # Grafana configuration with ingress
+  grafana:
+    enabled: true
+    adminPassword: admin
+    service:
+      type: ClusterIP
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations: {}
+      hosts:
+        - grafana.127.0.0.1.nip.io
+      path: /
+      pathType: Prefix
+      tls: []
+
+  # Prometheus server ingress
+  prometheus:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations: {}
+      hosts:
+        - prometheus.127.0.0.1.nip.io
+      paths:
+        - /
+      pathType: Prefix
+      tls: []
+    # Optional: reduce resources for local dev
+    prometheusSpec:
+      retention: 24h
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+  # Alertmanager ingress
+  alertmanager:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations: {}
+      hosts:
+        - alertmanager.127.0.0.1.nip.io
+      paths:
+        - /
+      pathType: Prefix
+      tls: []
+    alertmanagerSpec:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+  # Enable kube-state-metrics & node exporter (defaults already true; kept explicit)
+  kube-state-metrics:
+    enabled: true
+  nodeExporter:
+    enabled: true
+
+  # Disable components not needed for local dev (toggle later if desired)
+  prometheusOperator:
+    admissionWebhooks:
+      enabled: true
+
+# Top-level helper toggles for future expansion
+global:
+  # Can add common imagePullPolicy etc. here if needed
+  imagePullPolicy: IfNotPresent

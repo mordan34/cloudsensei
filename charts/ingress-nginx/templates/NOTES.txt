@@ -1,0 +1,25 @@
+RELEASE: {{ .Release.Name }}
+NAMESPACE: {{ .Release.Namespace }}
+
+ingress-nginx controller deployed (local dev).
+
+NodePorts:
+  HTTP: 30080
+  HTTPS: 30443
+
+Test controller reachable:
+  curl -I http://127.0.0.1:30080
+
+Default ingressClass: nginx
+
+Example host (nip.io resolves to 127.0.0.1):
+  grafana.127.0.0.1.nip.io
+
+Troubleshooting:
+  kubectl -n {{ .Release.Namespace }} get pods -l app.kubernetes.io/name=ingress-nginx
+  kubectl -n {{ .Release.Namespace }} logs deploy/{{ .Release.Name }}-ingress-nginx-controller
+
+Uninstall:
+  helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+Done.

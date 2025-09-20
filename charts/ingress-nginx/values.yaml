@@ -1,0 +1,21 @@
+ingress-nginx:
+  enabled: true
+
+  controller:
+    replicaCount: 1
+    watchIngressWithoutClass: true
+    ingressClassResource:
+      name: nginx
+      enabled: true
+      default: true
+      controllerValue: "k8s.io/ingress-nginx"
+    service:
+      type: NodePort
+      nodePorts:
+        http: 30080
+        https: 30443
+    metrics:
+      enabled: true
+
+  defaultBackend:
+    enabled: false

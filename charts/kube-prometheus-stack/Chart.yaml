@@ -1,0 +1,11 @@
+apiVersion: v2
+name: kube-prometheus-stack-wrapper
+description: Wrapper chart to install kube-prometheus-stack with local dev ingress
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: kube-prometheus-stack
+    version: 65.2.0
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: kube-prometheus-stack.enabled

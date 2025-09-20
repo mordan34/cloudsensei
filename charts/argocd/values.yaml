@@ -1,0 +1,60 @@
+argo-cd:
+  enabled: true
+
+  # Run Argo CD server without TLS (HTTP for local dev)
+  server:
+    insecure: true
+    service:
+      type: ClusterIP
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations: {}
+      hosts:
+        - argocd.127.0.0.1.nip.io
+      paths:
+        - /
+      pathType: Prefix
+      tls: []
+    extraArgs:
+      - --insecure
+
+  # Reduce resource usage for local env
+  repoServer:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  applicationSet:
+    resources:
+      requests:
+        cpu: 30m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+
+  controller:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 300m
+        memory: 256Mi
+
+  # Disable Dex for simplicity (optional)
+  dex:
+    enabled: false
+
+  # Expose notifications controller (optional, keep minimal)
+  notifications:
+    enabled: false
+
+  # Initial admin password retrieval:
+  # kubectl -n <namespace> get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+# Future: add RBAC / projects / repos via configs here.

@@ -1,0 +1,11 @@
+apiVersion: v2
+name: argocd-wrapper
+description: Wrapper chart to deploy Argo CD with local dev ingress
+type: application
+version: 0.1.0
+appVersion: "2.11.0"
+dependencies:
+  - name: argo-cd
+    version: 7.3.7
+    repository: https://argoproj.github.io/argo-helm
+    condition: argo-cd.enabled

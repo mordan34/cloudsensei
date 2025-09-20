@@ -1,0 +1,29 @@
+RELEASE: {{ .Release.Name }}
+NAMESPACE: {{ .Release.Namespace }}
+
+Argo CD has been deployed (wrapper chart).
+
+Ingress (no TLS, dev mode):
+  URL: http://{{ (index .Values "argo-cd" "server" "ingress" "hosts" 0) | default "argocd.127.0.0.1.nip.io" }}
+
+Login (initial):
+  Username: admin
+  Password: 
+    kubectl -n {{ .Release.Namespace }} get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+
+Port-forward alternative (if ingress not yet ready):
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ .Release.Name }}-argocd-server 8080:80
+
+Typical workflow:
+  1. Add Git repo (UI or CLI)
+  2. Create App pointing at path / (or subpath) and destination https://kubernetes.default.svc, namespace target
+  3. Sync
+
+CLI login:
+  argocd login {{ (index .Values "argo-cd" "server" "ingress" "hosts" 0) | default "argocd.127.0.0.1.nip.io" }} --insecure \
+    --username admin --password $(kubectl -n {{ .Release.Namespace }} get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+
+Uninstall:
+  helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+Done.
